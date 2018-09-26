@@ -3,13 +3,13 @@ package BinaryTree;
 public class BinaryTree {
 	
 	//int[] values = {10,7,13,9,11};
-	int[] values = new int[10];
+	int[] values = new int[6];
 	Node root;
 	boolean findme = false;
 	
 	private void randomArray() {
 		for (int i = 0; i < values.length; i++) {
-			values[i] = (int)(Math.random() * ((100 - 1) + 1)) + 1;
+			values[i] = (int)(Math.random() * ((10 - 1) + 1)) + 1;
 		}
 	}
 	
@@ -57,25 +57,23 @@ public class BinaryTree {
 		}
 	}
 	
-	private boolean findBinaryTree(Node node, int value) {
-		if(node != null && node.value == value) {
-			return true;
-		}
-		if(node.left != null) {
-			return findBinaryTree(node.left, value);
-		}
-		if(node.right != null) {
-			return findBinaryTree(node.right, value);
-		}
-		return false;
-	}
 	
-	public void findValue(int value) {
-		if(findBinaryTree(root, value) == true) {
-			System.out.println("Yes : " + value);
-		} else {
-			System.out.println("Nope : " + value);
-		}
+	public boolean findValue(int value) {
+            
+            Node focusNode = root;
+            
+            while(focusNode != null){
+                
+                if(focusNode.value == value){
+                    return true;
+                } else if(value < focusNode.value){
+                    focusNode = focusNode.left;
+                } else {
+                    focusNode = focusNode.right;
+                }                
+            }
+		
+            return false;
 	}
 	
 	
@@ -119,9 +117,10 @@ public class BinaryTree {
 		bt.buildTree();
 		bt.traverse();
 		System.out.println("");
-		//int findval = 13;
-		//bt.findValue(findval);
-		bt.ascendingOrderTree();
+		int findval = 5;
+		if(bt.findValue(findval)) System.out.println(findval + " Found");
+                else  System.out.println(findval + " NOT");
+		//bt.ascendingOrderTree();
 		System.out.println("");
 		//bt.descendingOrderTree();
 		
