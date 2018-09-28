@@ -1,6 +1,8 @@
 package BinaryTree;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class BinaryTree {
@@ -135,18 +137,27 @@ public class BinaryTree {
             return false;
 	}
 	
-	public Node findValueWithNode(int value) {
-        Node focusNode = root;
-        while(focusNode != null){
-            if(focusNode.value == value){
-                return focusNode;
-            } else if(value < focusNode.value){
-                focusNode = focusNode.left;
-            } else {
-                focusNode = focusNode.right;
-            }                
-        }
-        return null;
+	public Node[] findValueWithNode(int value) {
+            Node[] nodes = new Node[2];
+            nodes[0] = null;
+            nodes[1] = null;
+             
+            Node focusNode = root;
+            Node parent = root;
+            while(focusNode != null){
+                if(focusNode.value == value){
+                    nodes[0] = parent;
+                    nodes[1] = focusNode;
+                    return nodes;
+                } else if(value < focusNode.value){
+                    parent = focusNode;
+                    focusNode = focusNode.left;
+                } else {
+                    parent = focusNode;
+                    focusNode = focusNode.right;
+                }                
+            }
+            return nodes;
 	}
 	
 	private void ascTree(Node node) {
@@ -184,41 +195,74 @@ public class BinaryTree {
 	}
 	
 	public void remove(int value) {
-		Node DeleteNode = findValueWithNode(value);
-		if(DeleteNode != null) {
-			Node parent = null;
-			Node focusNode;
-			Node linkNode;
-			if(DeleteNode == root) {
-				if(DeleteNode.right == null && DeleteNode.left == null ) {
-					root = null;
-				} else if(DeleteNode.right == null) {
-					// Get the Highest from Left
-					
-				} else {
-					// Get the Lowest from Right
-					focusNode = DeleteNode.right;
-					linkNode = focusNode;
-					parent = focusNode;
-					if(focusNode.left != null) {
-						while(focusNode.left != null) {
-							parent = focusNode;
-							focusNode = focusNode.left;
-						}
-					}
-					focusNode.left = DeleteNode.left;
-					focusNode.right = linkNode;
-					linkNode = focusNode; 
-					parent.left = null;
-					DeleteNode = null;
-					root = linkNode;
-				}
-				// Find the lowest in the right and replace it (Lowest is going to be Leaf node)
-				
-			}
-		}
+            Node[] nodes = new Node[2];
+            nodes = findValueWithNode(value);
+            Node DeleteNodeParent = nodes[0];
+            Node DeleteNode = nodes[1];
+            
+            if(isLeafNode(DeleteNode)){
+                // delete leaf node and set parent reference to null
+                if(DeleteNodeParent.left == DeleteNode)
+                    DeleteNodeParent.left = null;
+                else
+                    DeleteNodeParent.right = null;
+                DeleteNode = null;
+                return;
+            }
+            
+            if(hasOneChild(DeleteNode)){
+                //replace it with the child
+            }
+            
+            if(hasBothChild(DeleteNode)){
+                
+            }
 		
 	}
+        
+        private Node[] findMinRight(Node root){
+            Node[] nodes = new Node[2];
+            Node parent = root;
+            Node focusNode = root.right;
+            while(focusNode.left != null){
+                parent = focusNode;
+                focusNode = focusNode.left;
+            }
+            nodes[0] = parent;
+            nodes[1] = focusNode;
+            return nodes;
+        }
+        
+        private Node[] findMaxLeft(Node root){
+            Node[] nodes = new Node[2];
+            Node focusNode = root.left;
+            Node parent = root;
+            
+            while(focusNode.right != null){
+                parent = focusNode;
+                focusNode = focusNode.right;
+            }
+            nodes[0] = parent;
+            nodes[1] = focusNode;
+            return nodes;
+        }
+        
+        private boolean hasBothChild(Node node){
+            if(node.left != null && node.right != null) return true;
+            return false;
+        }
+       
+        private boolean hasOneChild(Node node){
+            if(node.left == null && node.right != null) return true;
+            if(node.left != null && node.right == null) return true;
+            return false;
+
+        }
+        
+        private boolean isLeafNode(Node node){
+            if(node.left == null && node.right == null) return true;
+            return false;
+        }
 	
 	public static void main(String[] args) {
 		BinaryTree bt = new BinaryTree();
@@ -228,7 +272,7 @@ public class BinaryTree {
 		bt.InOrderTraversal(bt.root);
 		System.out.println("");
 		//bt.remove(10);
-		bt.remove(11);
+		bt.remove(22);
 		bt.InOrderTraversal(bt.root);
 		System.out.println("");
 		
