@@ -5,7 +5,8 @@ import java.util.Queue;
 
 public class BinaryTree {
 	
-	int[] values = {10,7,13,9,11,22};
+	//int[] values = {10,7,13,9,11,22};
+	int[] values = {11,7,13,9,22};
 	//int[] values = new int[6];
 	Node root;
 	boolean findme = false;
@@ -94,7 +95,6 @@ public class BinaryTree {
 		if(root.right != null) InOrderTraversal(root.right);
 	}
 	
-	
 	/*
 	 * Depth First Traversal
 	 * PostOrder Traversal
@@ -135,6 +135,19 @@ public class BinaryTree {
             return false;
 	}
 	
+	public Node findValueWithNode(int value) {
+        Node focusNode = root;
+        while(focusNode != null){
+            if(focusNode.value == value){
+                return focusNode;
+            } else if(value < focusNode.value){
+                focusNode = focusNode.left;
+            } else {
+                focusNode = focusNode.right;
+            }                
+        }
+        return null;
+	}
 	
 	private void ascTree(Node node) {
 		
@@ -170,19 +183,60 @@ public class BinaryTree {
 		dscTree(root);
 	}
 	
+	public void remove(int value) {
+		Node DeleteNode = findValueWithNode(value);
+		if(DeleteNode != null) {
+			Node parent = null;
+			Node focusNode;
+			Node linkNode;
+			if(DeleteNode == root) {
+				if(DeleteNode.right == null && DeleteNode.left == null ) {
+					root = null;
+				} else if(DeleteNode.right == null) {
+					// Get the Highest from Left
+					
+				} else {
+					// Get the Lowest from Right
+					focusNode = DeleteNode.right;
+					linkNode = focusNode;
+					parent = focusNode;
+					if(focusNode.left != null) {
+						while(focusNode.left != null) {
+							parent = focusNode;
+							focusNode = focusNode.left;
+						}
+					}
+					focusNode.left = DeleteNode.left;
+					focusNode.right = linkNode;
+					linkNode = focusNode; 
+					parent.left = null;
+					DeleteNode = null;
+					root = linkNode;
+				}
+				// Find the lowest in the right and replace it (Lowest is going to be Leaf node)
+				
+			}
+		}
+		
+	}
 	
 	public static void main(String[] args) {
 		BinaryTree bt = new BinaryTree();
 		bt.buildTree();
-		bt.BFStraversal(bt.root);
-		System.out.println("");
+		//bt.BFStraversal(bt.root);
+		//System.out.println("");
 		bt.InOrderTraversal(bt.root);
 		System.out.println("");
-		bt.PostOrderTraversal(bt.root);
+		//bt.remove(10);
+		bt.remove(11);
+		bt.InOrderTraversal(bt.root);
 		System.out.println("");
-		bt.PreOrderTraversal(bt.root);
-		System.out.println("");
-		bt.traverse();
+		
+		//bt.PostOrderTraversal(bt.root);
+		//System.out.println("");
+		//bt.PreOrderTraversal(bt.root);
+		//System.out.println("");
+		//bt.traverse();
 		//System.out.println("");
 		//int findval = 5;
 		//if(bt.findValue(findval)) System.out.println(findval + " Found");
